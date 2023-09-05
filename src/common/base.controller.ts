@@ -1,5 +1,5 @@
 import { Response, Router } from 'express';
-import { IContollerRoute } from './controller-route.interface';
+import { ExpressReturnType, IContollerRoute } from './controller-route.interface';
 import { ILogger } from '../logger/logger.interface';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
@@ -11,24 +11,24 @@ export abstract class BaseController {
 		this._router = Router();
 	}
 
-	get router() {
+	get router(): Router {
 		return this._router;
 	}
 
-	public send<T>(response: Response, code: number, message: T) {
+	public send<T>(response: Response, code: number, message: T): ExpressReturnType {
 		response.type('application/json');
 		return response.status(code).json(message);
 	}
 
-	public ok<T>(response: Response, message: T) {
+	public ok<T>(response: Response, message: T): void {
 		this.send<T>(response, 200, message);
 	}
 
-	public created(response: Response) {
+	public created(response: Response): ExpressReturnType {
 		return response.status(201);
 	}
 
-	protected bindRoutes(routes: IContollerRoute[]) {
+	protected bindRoutes(routes: IContollerRoute[]): void {
 		for (const route of routes) {
 			this.logger.log(`[${route.method}] ${route.path}`);
 			const handler = route.function.bind(this);

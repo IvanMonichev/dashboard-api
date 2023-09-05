@@ -17,11 +17,11 @@ export class UserController extends BaseController implements IUserController {
 		]);
 	}
 
-	login(request: Request, response: Response, next: NextFunction) {
+	login(request: Request, response: Response, next: NextFunction): void {
 		next(new HttpErrorClass(401, 'Ошибка авторизаци', 'login'));
 	}
 
-	register(request: Request, response: Response, next: NextFunction) {
+	register(request: Request, response: Response, next: NextFunction): void {
 		this.ok(response, 'register');
 	}
 }
