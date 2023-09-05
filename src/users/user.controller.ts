@@ -9,6 +9,7 @@ import { IUserController } from './user.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { UserService } from './user.service';
+import { ValidateMiddleware } from '../common/validate.middleware';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -18,14 +19,32 @@ export class UserController extends BaseController implements IUserController {
 	) {
 		super(loggerService);
 		this.bindRoutes([
-			{ path: '/register', method: 'post', function: this.register },
-			{ path: '/login', method: 'post', function: this.login }
+			{
+				path: '/register',
+				method: 'post',
+				function: this.register,
+				middlewares: [new ValidateMiddleware(UserRegisterDto)]
+			},
+			{
+				path: '/login',
+				method: 'post',
+				function: this.login,
+				middlewares: [new ValidateMiddleware(UserLoginDto)]
+			}
 		]);
 	}
 
-	login(request: Request<{}, {}, UserLoginDto>, response: Response, next: NextFunction): void {
-		console.log(request.body);
-		next(new HttpErrorClass(401, 'Ошибка авторизации', 'login'));
+	async login(
+		request: Request<{}, {}, UserLoginDto>,
+		response: Response,
+		next: NextFunction
+	): Promise<void> {
+		const result = await this.userService.validateUser(request.body);
+		if (!result) {
+			return next(new HttpErrorClass(401, 'Ошибка авторизации', 'login'));
+		}
+
+		this.ok(response, {});
 	}
 
 	async register(
@@ -38,6 +57,6 @@ export class UserController extends BaseController implements IUserController {
 			return next(new HttpErrorClass(422, 'Такой пользователь уже существует'));
 		}
 
-		this.ok(response, { email: result.email });
+		this.ok(response, { email: result.email, id: result.id });
 	}
 }

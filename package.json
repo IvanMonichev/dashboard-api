@@ -9,6 +9,7 @@
     "start": "node ./dist/main.js",
     "dev": "nodemon",
     "dev:inspect": "nodemon -e ts.json --exec node --inspect=localhost:3090 -r ts-node/register src/main.ts",
+    "generate": "npx prisma generate",
     "lint": "eslint ./src/**",
     "lint:fix": "eslint ./src/** --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,9 +18,13 @@
   "author": "Ivan Monichev",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.2.0",
     "@types/bcryptjs": "^2.4.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "inversify": "^6.0.1",
     "reflect-metadata": "^0.1.13",
@@ -34,6 +39,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
+    "prisma": "^5.2.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
